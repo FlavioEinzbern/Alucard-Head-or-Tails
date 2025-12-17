@@ -1,10 +1,14 @@
 const idleVideo = document.getElementById('idleVideo');
 const actionVideo = document.getElementById('actionVideo');
 
-const videoB = 'videos/heads.mp4';
-const videoC = 'videos/tails.mp4';
+const preloadHeads = document.getElementById('preloadHeads');
+const preloadTails = document.getElementById('preloadTails');
 
 let isPlayingAction = false;
+
+// reduce lag
+preloadHeads.load();
+preloadTails.load();
 
 // crossfade
 function crossfade(from, to, duration = 50) {
@@ -12,30 +16,30 @@ function crossfade(from, to, duration = 50) {
   setTimeout(() => from.classList.add('hidden'), duration);
 }
 
-// click 50/50
 document.body.addEventListener('click', () => {
-  if (isPlayingAction) return; // block double clicks
+  if (isPlayingAction) return;
   isPlayingAction = true;
 
-  const nextVideo = Math.random() < 0.5 ? videoB : videoC;
-  actionVideo.src = nextVideo;
+  const chosen =
+    Math.random() < 0.5 ? preloadHeads : preloadTails;
+
+  actionVideo.src = chosen.currentSrc;
   actionVideo.currentTime = 0;
   actionVideo.muted = false;
 
-  // start playback
   actionVideo.play().then(() => {
     crossfade(idleVideo, actionVideo);
   });
 
-  // fade back to looping A after a video
   actionVideo.onended = () => {
     idleVideo.currentTime = 0;
     idleVideo.play();
     crossfade(actionVideo, idleVideo);
+
     setTimeout(() => {
       actionVideo.classList.add('hidden');
       actionVideo.src = '';
       isPlayingAction = false;
-    }, 100); // after fade
+    }, 100);
   };
 });
