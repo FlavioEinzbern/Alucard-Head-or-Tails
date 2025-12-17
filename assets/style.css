@@ -1,0 +1,23 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-layer {
+    position: absolute;
+    width: 80vw;
+    height: auto;
+    object-fit: contain;
+    transition: opacity 0.05s linear; /* ~3 frames crossfade */
+  }
+
+  .video-layer.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
